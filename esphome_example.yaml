@@ -1,0 +1,59 @@
+esphome:
+  name: sensoresp32
+  includes:
+    - "GroveMultiChannelGasV2.cpp.h"
+  libraries:
+    - "Wire"
+    - "https://github.com/Seeed-Studio/Seeed_Arduino_MultiGas"
+    
+esp32:
+  board: nodemcu-32s
+  framework:
+    type: arduino
+ 
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ""
+ota:
+  password: ""
+
+wifi:
+  ssid: "ssid"
+  password: "password"
+
+  # Enable swrfallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "sensoresp32"
+    password: "password"
+    
+captive_portal:
+
+i2c:
+  sda: 21
+  scl: 22
+  scan: true
+  
+# Example configuration entry
+sensor:
+  - platform: custom
+    lambda: |-
+      auto my_sensor = new GroveMultiChannelGasV2();
+      App.register_component(my_sensor);
+      return {my_sensor->co_sensor, my_sensor->no2_sensor, my_sensor->c2h5oh_sensor, my_sensor->voc_sensor};
+    sensors:
+      - name: "CO Sensor"
+        accuracy_decimals: 2
+        unit_of_measurement: 'ppm'
+      - name: "NO2 Sensor"
+        accuracy_decimals: 2
+        unit_of_measurement: 'µg/m³'
+      - name: "C2H5OH Sensor"
+        accuracy_decimals: 2
+        unit_of_measurement: 'ppm'
+      - name: "VOC Sensor"
+        accuracy_decimals: 2
+        unit_of_measurement: 'ppm'
+
